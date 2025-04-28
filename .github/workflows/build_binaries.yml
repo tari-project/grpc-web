@@ -39,7 +39,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: ">=1.20"
 
       - name: Declare Global Variables 4 GHA ${{ github.event_name }}
         id: set-ga-vars
@@ -58,12 +58,12 @@ jobs:
         shell: bash
         working-directory: go
         run: |
-          if [ "${PLATFORM}" == "macos" ]; then
-            GOOS="macos"
+          if [[ "${PLATFORM}" == "macos" ]]; then
+            GOOS="darwin"
           else
-            GOOS="${PLATFORM}"
+            GOOS="${PLATFORM}""
           fi
-          if [ "${ARCH}" == "amd64" ]; then
+          if [[ "${ARCH}" == "amd64" ]]; then
             GOARCH="x86_64"
           else
             GOARCH="${ARCH}"
@@ -73,11 +73,12 @@ jobs:
 
           mkdir -p build/${TARGET}
 
-          if [ "${GOOS}" = "windows" ]; then
+          if [[ "${GOOS}" == "windows" ]]; then
             TS_FILENAME=${TS_FILENAME}.exe
             echo "TS_FILENAME=${TS_FILENAME}" >> "$GITHUB_ENV"
           fi
 
+          printenv
           go build -o build/${TARGET}/${TS_FILENAME} ./grpcwebproxy
           cp -v ./grpcwebproxy/README.md build/${TARGET}/
 
