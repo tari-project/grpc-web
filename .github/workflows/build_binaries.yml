@@ -78,4 +78,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: grpcwebproxy-${{ env.TARGET }}
-          path: build/${{ env.TARGET }}/
+          path: go/build/${{ env.TARGET }}/
