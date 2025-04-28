@@ -1,0 +1,79 @@
+---
+name: Build Matrix of Binaries
+
+'on':
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]*"
+    branches:
+      - "build-bins-*"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build grpc-web-proxy
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+      fail-fast: false # important! even if one combo fails, others continue
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Build web proxy binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          # Map GOOS/GOARCH to user-friendly folder name
+          case "${GOOS}_${GOARCH}" in
+            linux_amd64)
+              TARGET=linux-x86_64
+              ;;
+            linux_arm64)
+              TARGET=linux-arm64
+              ;;
+            windows_amd64)
+              TARGET=windows-x86_64
+              ;;
+            windows_arm64)
+              TARGET=windows-arm64
+              ;;
+            darwin_amd64)
+              TARGET=macos-x86_64
+              ;;
+            darwin_arm64)
+              TARGET=macos-arm64
+              ;;
+            *)
+              echo "Unknown target: ${GOOS}_${GOARCH}"
+              exit 1
+              ;;
+          esac
+
+          echo "TARGET=$TARGET" >> "$GITHUB_ENV"
+
+          mkdir -p build/${TARGET}
+
+          BINARY_NAME=grpcwebproxy
+          if [ "$GOOS" = "windows" ]; then
+            BINARY_NAME=grpcwebproxy.exe
+          fi
+
+          go build -o build/${TARGET}/${BINARY_NAME} ./go
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grpcwebproxy-${{ env.TARGET }}
+          path: build/${{ env.TARGET }}/
