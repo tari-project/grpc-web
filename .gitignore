@@ -168,3 +168,6 @@ misc/localhostCA.srl
 
 node_modules
 vendor
+
+# Ignore OS files
+.DS_Store
