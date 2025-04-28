@@ -61,7 +61,7 @@ jobs:
           if [[ "${PLATFORM}" == "macos" ]]; then
             GOOS="darwin"
           else
-            GOOS="${PLATFORM}""
+            GOOS="${PLATFORM}"
           fi
           if [[ "${ARCH}" == "amd64" ]]; then
             GOARCH="x86_64"
