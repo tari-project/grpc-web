@@ -34,6 +34,8 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: 0
+        shell: bash
+        working-directory: go
         run: |
           # Map GOOS/GOARCH to user-friendly folder name
           case "${GOOS}_${GOARCH}" in
@@ -70,7 +72,7 @@ jobs:
             BINARY_NAME=grpcwebproxy.exe
           fi
 
-          go build -o build/${TARGET}/${BINARY_NAME} ./go
+          go build -o build/${TARGET}/${BINARY_NAME} ./grpcwebproxy
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
