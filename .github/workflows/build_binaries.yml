@@ -70,7 +70,7 @@ jobs:
           fi
 
           export GOARCH="${ARCH}"
-          export TARGET="${GOOS}-${TS_ARCH}"
+          export TARGET="${PLATFORM}-${TS_ARCH}"
           echo "TARGET=${TARGET}" >> "$GITHUB_ENV"
 
           mkdir -p build/${TARGET}
