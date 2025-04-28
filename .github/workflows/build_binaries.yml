@@ -59,26 +59,26 @@ jobs:
         working-directory: go
         run: |
           if [[ "${PLATFORM}" == "macos" ]]; then
-            GOOS="darwin"
+            export GOOS="darwin"
           else
-            GOOS="${PLATFORM}"
+            export GOOS="${PLATFORM}"
           fi
           if [[ "${ARCH}" == "amd64" ]]; then
-            GOARCH="x86_64"
+            export GOARCH="x86_64"
           else
-            GOARCH="${ARCH}"
+            export GOARCH="${ARCH}"
           fi
-          TARGET="${GOOS}-${GOARCH}"
+          export TARGET="${GOOS}-${GOARCH}"
           echo "TARGET=${TARGET}" >> "$GITHUB_ENV"
 
           mkdir -p build/${TARGET}
 
           if [[ "${GOOS}" == "windows" ]]; then
-            TS_FILENAME=${TS_FILENAME}.exe
+            export TS_FILENAME=${TS_FILENAME}.exe
             echo "TS_FILENAME=${TS_FILENAME}" >> "$GITHUB_ENV"
           fi
 
-          printenv
+          printenv | sort
           go build -o build/${TARGET}/${TS_FILENAME} ./grpcwebproxy
           cp -v ./grpcwebproxy/README.md build/${TARGET}/
 
