@@ -45,10 +45,10 @@ jobs:
         id: set-ga-vars
         shell: bash
         run: |
-          echo "VBRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "VBRANCH=${{ github.ref_name }}" >> "$GITHUB_ENV"
           VSHA_SHORT=$(git rev-parse --short HEAD)
-          echo "VSHA_SHORT=${VSHA_SHORT}" >> $GITHUB_ENV
-          echo "VSHA_SHORT=${VSHA_SHORT}" >> $GITHUB_OUTPUT
+          echo "VSHA_SHORT=${VSHA_SHORT}" >> "$GITHUB_ENV"
+          echo "VSHA_SHORT=${VSHA_SHORT}" >> "$GITHUB_OUTPUT"
 
       - name: Build web proxy binary
         env:
@@ -68,8 +68,8 @@ jobs:
           else
             GOARCH="${ARCH}"
           fi
-          TARGET="${GOOS}-${GOARCH}""
-          echo "TARGET=$TARGET" >> "$GITHUB_ENV"
+          TARGET="${GOOS}-${GOARCH}"
+          echo "TARGET=${TARGET}" >> "$GITHUB_ENV"
 
           mkdir -p build/${TARGET}
 
@@ -82,7 +82,7 @@ jobs:
           cp -v ./grpcwebproxy/README.md build/${TARGET}/
 
           BINFILE="${TS_FILENAME}-${VBRANCH}-${VSHA_SHORT}-${TS_FILENAME}"
-          echo "BINFILE=${BINFILE}" >> $GITHUB_ENV
+          echo "BINFILE=${BINFILE}" >> "$GITHUB_ENV"
 
       - name: Archive and Checksum Binaries
         shell: bash
